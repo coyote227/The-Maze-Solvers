@@ -1,0 +1,23 @@
+# C++ build output
+*.exe
+*.out
+*.o
+*.obj
+
+# Generated benchmark and solution files
+results.txt
+fastest.txt
+solution.txt
+
+# Python cache and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
