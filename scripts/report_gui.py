@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 
-def load_maze(path="maze.txt"):
+def load_maze(path="data/maze.txt"):
     try:
         with open(path, "r") as f:
             h, w = map(int, f.readline().split())
@@ -16,15 +16,15 @@ def load_maze(path="maze.txt"):
         return None
 
 
-def load_results(path="results.txt"):
+def load_results(path="output/results.txt"):
     try:
         with open(path, "r") as f:
             return f.read()
     except Exception as e:
-        return f"(results.txt not found or unreadable)\n{e}"
+        return f"(output/results.txt not found or unreadable)\n{e}"
 
 
-def load_fastest_path(path="fastest.txt"):
+def load_fastest_path(path="output/fastest.txt"):
     try:
         with open(path, "r") as f:
             lines = [line.rstrip("\n") for line in f]
@@ -42,12 +42,12 @@ def load_fastest_path(path="fastest.txt"):
         return ("", [])
 
 
-def load_benchmark(path="benchmark.csv"):
+def load_benchmark(path="output/benchmark.csv"):
     try:
         with open(path, newline="") as f:
             return list(csv.DictReader(f))
     except Exception as e:
-        return [{"Error": f"benchmark.csv not found or unreadable: {e}"}]
+        return [{"Error": f"output/benchmark.csv not found or unreadable: {e}"}]
 
 
 class MazeCanvas(ttk.Frame):
@@ -81,12 +81,12 @@ class MazeCanvas(ttk.Frame):
 
 
 def main():
-    maze = load_maze("maze.txt")
+    maze = load_maze("data/maze.txt")
     if maze is None:
         return
-    res_text = load_results("results.txt")
-    benchmark = load_benchmark("benchmark.csv")
-    fastest_name, fastest_path = load_fastest_path("fastest.txt")
+    res_text = load_results("output/results.txt")
+    benchmark = load_benchmark("output/benchmark.csv")
+    fastest_name, fastest_path = load_fastest_path("output/fastest.txt")
 
     root = tk.Tk()
     root.title("Maze Solver Results")

@@ -67,7 +67,7 @@ def find_start_end_points(maze):
     
     return (start_row, start_col), (end_row, end_col)
 
-def save_maze_to_file(maze, filename="maze.txt"):
+def save_maze_to_file(maze, filename="data/maze.txt"):
     """
     Save maze to a text file in a format suitable for C++ parsing.
     Format:
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     start_pos, end_pos = find_start_end_points(generated_maze)
     
     # Save maze to file for C++ program
-    save_maze_to_file(generated_maze, "maze.txt")
+    save_maze_to_file(generated_maze, "data/maze.txt")
     
     # print_maze(generated_maze)  # Uncomment to also print in console
     draw_maze_turtle(generated_maze, cell_size=24, start_pos=start_pos, end_pos=end_pos)

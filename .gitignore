@@ -5,10 +5,11 @@
 *.obj
 
 # Generated benchmark and solution files
-results.txt
-fastest.txt
 benchmark.csv
-solution.txt
+output/results.txt
+output/fastest.txt
+output/benchmark.csv
+output/solution.txt
 
 # Python cache and virtual environments
 __pycache__/

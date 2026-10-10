@@ -330,7 +330,7 @@ void printPathMaze(const Maze& maze, const vector<Cell>& path) {
 }
 
 void saveResults(const Maze& maze, const vector<Result>& results, const Result& fastest) {
-    ofstream output("results.txt");
+    ofstream output("output/results.txt");
     output << "Maze: " << maze.height << 'x' << maze.width
            << "  Start: (" << maze.start.row << ',' << maze.start.col << ')'
            << "  End: (" << maze.end.row << ',' << maze.end.col << ")\n\n";
@@ -348,7 +348,7 @@ void saveResults(const Maze& maze, const vector<Result>& results, const Result& 
     output << "Fastest path length (moves): "
            << (fastest.path.empty() ? 0 : fastest.path.size() - 1) << '\n';
 
-    ofstream fastestOutput("fastest.txt");
+    ofstream fastestOutput("output/fastest.txt");
     fastestOutput << fastest.name << '\n';
     for (const Cell& cell : fastest.path) {
         fastestOutput << cell.row << ' ' << cell.col << '\n';
@@ -356,7 +356,7 @@ void saveResults(const Maze& maze, const vector<Result>& results, const Result& 
 }
 
 void saveBenchmark(const vector<BenchmarkRow>& rows, int runs) {
-    ofstream output("benchmark.csv");
+    ofstream output("output/benchmark.csv");
     output << "algorithm,height,width,runs,average_ms,minimum_ms,maximum_ms,"
                "peak_working_set_kb,path_moves\n";
     for (const BenchmarkRow& row : rows) {
@@ -368,8 +368,8 @@ void saveBenchmark(const vector<BenchmarkRow>& rows, int runs) {
 
 int main() {
     Maze maze;
-    if (!readMaze("maze.txt", maze)) {
-        cerr << "Could not read maze.txt\n";
+    if (!readMaze("data/maze.txt", maze)) {
+        cerr << "Could not read data/maze.txt\n";
         return 1;
     }
 
@@ -399,8 +399,8 @@ int main() {
     vector<BenchmarkRow> benchmark = benchmarkSizes(sizes, benchmarkRuns);
     saveBenchmark(benchmark, benchmarkRuns);
 
-    cout << "Results saved to results.txt and fastest.txt\n"
-         << "Benchmark saved to benchmark.csv\n"
+    cout << "Results saved to output/results.txt and output/fastest.txt\n"
+         << "Benchmark saved to output/benchmark.csv\n"
          << "Each benchmark case uses " << benchmarkRuns << " runs.\n";
     return 0;
 }
