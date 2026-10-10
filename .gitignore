@@ -7,6 +7,7 @@
 # Generated benchmark and solution files
 results.txt
 fastest.txt
+benchmark.csv
 solution.txt
 
 # Python cache and virtual environments

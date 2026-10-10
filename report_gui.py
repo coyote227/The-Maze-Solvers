@@ -1,3 +1,4 @@
+import csv
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -41,6 +42,14 @@ def load_fastest_path(path="fastest.txt"):
         return ("", [])
 
 
+def load_benchmark(path="benchmark.csv"):
+    try:
+        with open(path, newline="") as f:
+            return list(csv.DictReader(f))
+    except Exception as e:
+        return [{"Error": f"benchmark.csv not found or unreadable: {e}"}]
+
+
 class MazeCanvas(ttk.Frame):
     def __init__(self, master, maze_data, path_coords, cell_size=24, **kwargs):
         super().__init__(master, **kwargs)
@@ -59,7 +68,7 @@ class MazeCanvas(ttk.Frame):
                 ch = self.grid[r][c]
                 x0, y0 = c * self.cell, r * self.cell
                 x1, y1 = x0 + self.cell, y0 + self.cell
-                fill = "#202020"  # empty
+                fill = "#202020"
                 if ch == '1':
                     fill = "#444444"  # wall
                 if (r, c) in self.path and ch not in ('S', 'E'):
@@ -76,21 +85,60 @@ def main():
     if maze is None:
         return
     res_text = load_results("results.txt")
+    benchmark = load_benchmark("benchmark.csv")
     fastest_name, fastest_path = load_fastest_path("fastest.txt")
 
     root = tk.Tk()
     root.title("Maze Solver Results")
+    root.geometry("1200x700")
 
     # Left: text results
     left = ttk.Frame(root)
     left.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=8, pady=8)
-    ttk.Label(left, text="Results", font=("Segoe UI", 12, "bold")).pack(anchor=tk.W)
-    txt = tk.Text(left, wrap=tk.WORD, height=30, width=60)
+    tabs = ttk.Notebook(left)
+    tabs.pack(fill=tk.BOTH, expand=True)
+
+    results_tab = ttk.Frame(tabs)
+    tabs.add(results_tab, text="Current Maze")
+    txt = tk.Text(results_tab, wrap=tk.WORD, height=30, width=60)
     txt.pack(fill=tk.BOTH, expand=True)
     txt.insert("1.0", res_text)
     txt.configure(state=tk.DISABLED)
 
-    # Right: maze canvas with fastest path
+    benchmark_tab = ttk.Frame(tabs)
+    tabs.add(benchmark_tab, text="Benchmarks")
+    columns = (
+        "algorithm", "size", "runs", "average", "minimum", "maximum",
+        "memory", "path"
+    )
+    table = ttk.Treeview(benchmark_tab, columns=columns, show="headings")
+    headings = {
+        "algorithm": "Algorithm", "size": "Maze Size", "runs": "Runs",
+        "average": "Average ms", "minimum": "Minimum ms",
+        "maximum": "Maximum ms", "memory": "Peak KB", "path": "Path moves"
+    }
+    for column in columns:
+        table.heading(column, text=headings[column])
+        table.column(column, width=90, anchor=tk.CENTER)
+    for row in benchmark:
+        if "Error" in row:
+            table.insert("", tk.END, values=(row["Error"],))
+            continue
+        table.insert("", tk.END, values=(
+            row.get("algorithm", ""),
+            f"{row.get('height', '')}x{row.get('width', '')}",
+            row.get("runs", ""),
+            row.get("average_ms", ""),
+            row.get("minimum_ms", ""),
+            row.get("maximum_ms", ""),
+            row.get("peak_working_set_kb", ""),
+            row.get("path_moves", "")
+        ))
+    table.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+    scrollbar = ttk.Scrollbar(benchmark_tab, orient=tk.VERTICAL, command=table.yview)
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+    table.configure(yscrollcommand=scrollbar.set)
+
     right = ttk.Frame(root)
     right.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=8, pady=8)
     title = f"Fastest: {fastest_name}" if fastest_name else "Fastest: (none)"
